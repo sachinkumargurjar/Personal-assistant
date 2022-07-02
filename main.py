@@ -13,6 +13,8 @@ import ety
 from PyDictionary import PyDictionary
 import sys
 from nltk.corpus import wordnet
+import smtplib
+from email.message import EmailMessage
 
 
 listener = sr.Recognizer()
@@ -150,6 +152,25 @@ def getCompleteInfo(word):
     else:
         talk("I'm sorry. No data regarding the origin of " + str(word) + " was found.")
 
+email_List= {
+    'sezal' : 'sezalmangal@gmail.com',
+    'sachin' : 'sachingurjar@gmail.com',
+    'aanchal' : 'aanchaldeepkaur@gmail.com',
+    'pranav' :'pranavdhanuka@gmail.com'
+
+}
+
+def send_email(receiver,subject,message):
+    server=smptlib.SMPT('smpt.gmail.com',587)
+    server.starttls()
+    server.login('example@gmail.com','password')
+    email=EmailMessage()
+    email['From']='example@gmail.com'
+    email['To']=receiver
+    email['Subject']=subject
+    email.set_content(message)
+    server.send_message(email)
+
 
 greeting()
 talk('Alex here.')
@@ -211,10 +232,21 @@ if _name_ == '_main_':
            if 'no' in query:
                talk('Alright.')
 
-        if 'open dictionary' in query or 'dictionary' in command:
+        if 'open dictionary' in command or 'dictionary' in command:
            talk('What word should I look up for ?')
            word = command()
            getCompleteInfo(word)
+
+        if 'mail' in command or 'email' in command:
+            talk('To Whom tou want to send email')
+            name=take_command()
+            receiver=email_List[name]
+            talk('What is the subject of your email')
+            subject=take_command()
+            talk('what text you want to send')
+            message=take_command()
+            send_email(receiver,subject,message)
+            talk('Your email is sent')
 
         if 'that would be all' in command or 'that is it' in query or 'bye Alex' in command:
                talk('Alright. Have a nice day')
